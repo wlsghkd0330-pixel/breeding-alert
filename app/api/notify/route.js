@@ -5,12 +5,6 @@ const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const PAIRING_DB = '247c6fdb-e744-49a7-a76d-b6b3c5c3b415';
 const BREEDING_DB = '1e235770-9da1-80f9-b4b7-000be2fed8ef';
 
-webpush.setVapidDetails(
-  'mailto:wlsghkd0330@gmail.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
-
 const subscriptions = [];
 
 async function queryNotion(databaseId, filter) {
@@ -28,6 +22,12 @@ async function queryNotion(databaseId, filter) {
 
 export async function GET() {
   try {
+    webpush.setVapidDetails(
+      'mailto:wlsghkd0330@gmail.com',
+      process.env.VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+
     const today = new Date();
     const minus15 = new Date(today); minus15.setDate(today.getDate() - 15);
     const minus65 = new Date(today); minus65.setDate(today.getDate() - 65);
@@ -61,10 +61,10 @@ export async function GET() {
     }
 
     let body = '';
-    if (pairingList.length > 0) body += `📅 산란 대기 15일 이상: ${pairingList.join(', ')}\n`;
-    if (eggList.length > 0) body += `🥚 65일 이상된 알: ${eggList.join(', ')}`;
+    if (pairingList.length > 0) body += `산란 대기 15일 이상: ${pairingList.join(', ')}\n`;
+    if (eggList.length > 0) body += `65일 이상된 알: ${eggList.join(', ')}`;
 
-    const payload = JSON.stringify({ title: '🦎 브리딩 알림', body: body.trim(), url: '/' });
+    const payload = JSON.stringify({ title: '브리딩 알림', body: body.trim(), url: '/' });
 
     await Promise.all(subscriptions.map(sub =>
       webpush.sendNotification(sub, payload).catch(err => console.error(err))
