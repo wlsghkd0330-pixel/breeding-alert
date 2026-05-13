@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 import { NextResponse } from 'next/server';
-import webpush from 'web-push';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const PAIRING_DB = '247c6fdb-e744-49a7-a76d-b6b3c5c3b415';
@@ -23,6 +24,8 @@ async function queryNotion(databaseId, filter) {
 
 export async function GET() {
   try {
+    const webpush = (await import('web-push')).default;
+
     webpush.setVapidDetails(
       'mailto:wlsghkd0330@gmail.com',
       process.env.VAPID_PUBLIC_KEY,
